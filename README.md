@@ -1,91 +1,57 @@
-# Podcast RSS Feed Generator
+# The Future in Tech Podcast
 
-![GitHub Actions](https://github.com/bishwathakuri/podcast/workflows/Generate%20Podcast%20Feed/badge.svg)
+<img src="https://raybo.org/tfit-feed/images/artwork.jpg" width="250">
 
-A GitHub Action that automatically generates a podcast RSS feed (`podcast.xml`) from a YAML file (`feed.yml`) and updates it in your repository. This allows you to manage podcast content easily using YAML and publish updates via GitHub Pages.
+**The Future in Tech** is a weekly podcast series powered by [LinkedIn Learning](https://www.linkedin.com/learning/) and hosted by Senior Staff Instructor [Ray Villalobos](https://www.linkedin.com/in/planetoftheweb).
 
----
+The podcast aims to spark conversations, provide practical tips, and share resources to help developers work, learn, and tackle challenges in the technology industry.
 
-## Features
+We discuss topics like **Generative AI tools** (ChatGPT, DALL·E 2, Hugging Face) by talking to leaders building these tools. Episodes cover how professionals broke into technology, business strategies, ethical concerns, and the technical skills required for the future of work.
 
-- Convert a simple YAML file into a fully valid RSS feed for your podcast.
-- Automatically commits and pushes updates to your repository.
-- Works in a Docker container for consistent environments.
-- Fully automated using GitHub Actions.
+Guests include people who are building next-generation AI tools and leaders who have worked for or with **Fortune 500 companies** like Microsoft, Google, LinkedIn, IBM, OpenAI, and more.
 
 ---
 
-## Usage
+## How to Listen
 
-### 1. Prepare Your Repository
+You can follow the podcast through various platforms:
 
-- Add a `feed.yml` file in the root of your repository with your podcast episodes.
+- [Podcast Website](https://go.raybo.org/tfit)  
+- [Episode Guide](https://go.raybo.org/tfit-episodes)  
+- [YouTube Playlist](https://go.raybo.org/tfit-youtube)  
+- [Podcast RSS Feed (Audio Only)](https://go.raybo.org/tfit-feed-audio)  
+- [Episode Newsletter](https://go.raybo.org/tfit-newsletter)  
 
-Example `feed.yml`:
+---
 
-```yaml
-title: "My Awesome Podcast"
-description: "A podcast about tech and programming."
-link: "https://example.com"
-episodes:
-  - title: "Episode 1: Introduction"
-    description: "Getting started with our podcast."
-    pubDate: "2025-08-28"
-    url: "https://example.com/episode1.mp3"
-    length: 12345678
-    type: "audio/mpeg"
-  - title: "Episode 2: Advanced Topics"
-    description: "Diving deeper into technology."
-    pubDate: "2025-09-04"
-    url: "https://example.com/episode2.mp3"
-    length: 23456789
-    type: "audio/mpeg"
-```
+## About This Repository
 
-### 2. Add GitHub Action
+This repository contains:
 
-Create .github/workflows/main.yml:
-```yaml
-name: Generate Podcast Feed
+- `feed.yml` – The source YAML file for the podcast episodes.  
+- `feed.py` – Python script that generates `podcast.xml` (RSS feed) from `feed.yml`.  
+- `entrypoint.sh` – Shell script for GitHub Actions to automate feed generation and commit updates.  
+- `.github/workflows/main.yml` – GitHub Action workflow for automated RSS feed updates.
 
-on:
-  push:
-    paths:
-      - 'feed.yml'
+**Automated Workflow:**
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+1. Update `feed.yml` with new episode information.  
+2. GitHub Actions runs `feed.py` to generate `podcast.xml`.  
+3. Changes are committed and pushed automatically.  
+4. The RSS feed can be served via GitHub Pages for podcast distribution.
 
-      - name: Run Podcast Feed Generator
-        uses: <your-username>/<your-repo>@main
-        with:
-          name: ${{ github.actor }}
-          email: ${{ github.actor }}@users.noreply.github.com
-```
+---
 
-### 3. Docker Setup
-- The action uses a Docker container:
-- Python is installed in a virtual environment.
-- Dependencies like PyYAML are installed inside the container.
-- `feed.py` reads `feed.yml` and generates `podcast.xml`.
+## Contribution
 
-### 4. How It Works
-- Action runs whenever `feed.yml` is updated.
-- `feed.py` parses the YAML and generates `podcast.xml`.
-- `entrypoint.sh` commits and pushes `podcast.xml` only if there are changes.
+You can contribute by:
 
-### 5. Inputs
-| Input | Description       | Default                      |
-|-------|-------------------|------------------------------|
-| name  | Committer's name  | ${{ github.actor }}           |
-| email | Committer's email | ${{ github.actor }}@localhost |
+- Submitting pull requests to update `feed.yml`.  
+- Improving `feed.py` or automation scripts.  
+- Reporting issues related to RSS feed generation or formatting.
 
-### 6. Outputs
-Updates `podcast.xml` in the repository root.
+---
 
-### 7. License
-This project is licensed under the [MIT License](LICENSE).
+## License
+
+This repository is licensed under the **MIT License**.
