@@ -1,19 +1,91 @@
-# The Future in Tech
+# Podcast RSS Feed Generator
 
-<img src="https://raybo.org/tfit-feed/images/artwork.jpg" width="250">
+![GitHub Actions](https://github.com/bishwathakuri/podcast/workflows/Generate%20Podcast%20Feed/badge.svg)
 
-The [Future in Tech](https://go.raybo.org/tfit) is a weekly series powered by [LinkedIn Learning](https://www.linkedin.com/learning/) hosted by Senior Staff Instructor [Ray Villalobos](https://www.linkedin.com/in/planetoftheweb).
-
-You can [watch it on LinkedIn](https://go.raybo.org/tfit-episodes) every Thursday at 2pm ET, 11am PT. The goal of this series is to spark conversations, provide practical tips and resources to help developers work, learn, and tackle challenges related to working in the technology industry.
-
-We're talking about Generative AI tools like ChatGPT, Dall-E*2, Hugging Face by talking to some of the leaders delivering the tools, strategies and technologies that make working in technology exciting. We'll discuss how they broke into technology, business strategies, ethical concerns and technical skills.
-
-You have a chance to hear from people who are not just talking about, but building the next generation tools like Open AI and leaders who've worked for and with Fortune 500 companies like Microsoft, Google, LinkedIn,  IBM,  Open AI and more.
+A GitHub Action that automatically generates a podcast RSS feed (`podcast.xml`) from a YAML file (`feed.yml`) and updates it in your repository. This allows you to manage podcast content easily using YAML and publish updates via GitHub Pages.
 
 ---
-## More Info
-- [The Future in Tech Page](https://go.raybo.org/tfit)
-- [Episode Guide](https://go.raybo.org/tfit-episodes)
-- [YouTube Playlist](https://go.raybo.org/tfit-youtube)
-- [Podcast Feed - Audio Only](https://go.raybo.org/tfit-feed-audio)
-- [Episode Newsletter](https://go.raybo.org/tfit-newsletter)
+
+## Features
+
+- Convert a simple YAML file into a fully valid RSS feed for your podcast.
+- Automatically commits and pushes updates to your repository.
+- Works in a Docker container for consistent environments.
+- Fully automated using GitHub Actions.
+
+---
+
+## Usage
+
+### 1. Prepare Your Repository
+
+- Add a `feed.yml` file in the root of your repository with your podcast episodes.
+
+Example `feed.yml`:
+
+```yaml
+title: "My Awesome Podcast"
+description: "A podcast about tech and programming."
+link: "https://example.com"
+episodes:
+  - title: "Episode 1: Introduction"
+    description: "Getting started with our podcast."
+    pubDate: "2025-08-28"
+    url: "https://example.com/episode1.mp3"
+    length: 12345678
+    type: "audio/mpeg"
+  - title: "Episode 2: Advanced Topics"
+    description: "Diving deeper into technology."
+    pubDate: "2025-09-04"
+    url: "https://example.com/episode2.mp3"
+    length: 23456789
+    type: "audio/mpeg"
+```
+
+### 2. Add GitHub Action
+
+Create .github/workflows/main.yml:
+```yaml
+name: Generate Podcast Feed
+
+on:
+  push:
+    paths:
+      - 'feed.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Run Podcast Feed Generator
+        uses: <your-username>/<your-repo>@main
+        with:
+          name: ${{ github.actor }}
+          email: ${{ github.actor }}@users.noreply.github.com
+```
+
+### 3. Docker Setup
+- The action uses a Docker container:
+- Python is installed in a virtual environment.
+- Dependencies like PyYAML are installed inside the container.
+- `feed.py` reads `feed.yml` and generates `podcast.xml`.
+
+### 4. How It Works
+- Action runs whenever `feed.yml` is updated.
+- `feed.py` parses the YAML and generates `podcast.xml`.
+- `entrypoint.sh` commits and pushes `podcast.xml` only if there are changes.
+
+### 5. Inputs
+| Input | Description       | Default                      |
+|-------|-------------------|------------------------------|
+| name  | Committer's name  | ${{ github.actor }}           |
+| email | Committer's email | ${{ github.actor }}@localhost |
+
+### 6. Outputs
+Updates `podcast.xml` in the repository root.
+
+### 7. License
+This project is licensed under the [MIT License](LICENSE).
